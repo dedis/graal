@@ -322,6 +322,7 @@ def svm_gate_body(args, tasks):
                 javac_command = ['--javac-command', ' '.join(javac_image_command(svmbuild_dir()))]
                 helloworld(['--output-path', svmbuild_dir()] + javac_command)
                 helloworld(['--output-path', svmbuild_dir(), '--shared'])  # Build and run helloworld as shared library
+                helloworld(['--output-path', svmbuild_dir(), '-J-XX:StartFlightRecording=dumponexit=true'])  # Build and run helloworld with FlightRecorder at image build time
                 cinterfacetutorial([])
                 clinittest([])
 
