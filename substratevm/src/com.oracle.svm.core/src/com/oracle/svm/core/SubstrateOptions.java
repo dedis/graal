@@ -108,7 +108,7 @@ public class SubstrateOptions {
     };
 
     @Option(help = "Support continuations (without requiring a Project Loom JDK)") //
-    public static final HostedOptionKey<Boolean> SupportContinuations = new HostedOptionKey<>(false);
+    public static final HostedOptionKey<Boolean> SupportContinuations = new HostedOptionKey<>(true);
 
     @Option(help = "Build with Project Loom JDK") //
     public static final HostedOptionKey<Boolean> UseLoom = new HostedOptionKey<Boolean>(false) {
