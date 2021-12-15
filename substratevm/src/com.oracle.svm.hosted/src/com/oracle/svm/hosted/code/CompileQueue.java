@@ -41,6 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ForkJoinPool;
 
+import com.oracle.svm.hosted.analysis.Inflation;
 import org.graalvm.collections.EconomicMap;
 import org.graalvm.compiler.api.replacements.Fold;
 import org.graalvm.compiler.api.replacements.SnippetReflectionProvider;
@@ -371,8 +372,9 @@ public class CompileQueue {
     public void finish(DebugContext debug) {
         ProgressReporter reporter = ProgressReporter.singleton();
         try {
-            String imageName = universe.getBigBang().getHostVM().getImageName();
-            try (ReporterClosable ac = reporter.printParsing(new Timer(imageName, "(parse)"))) {
+            Inflation bigBang = universe.getBigBang();
+            String imageName = bigBang.getHostVM().getImageName();
+            try (ReporterClosable ac = reporter.printParsing(registerTimer(new Timer(imageName, "(parse)")))) {
                 parseAll();
             }
             // Checking @Uninterruptible annotations does not take long enough to justify a timer.
@@ -391,7 +393,7 @@ public class CompileQueue {
             }
 
             if (SubstrateOptions.AOTInline.getValue() && SubstrateOptions.AOTTrivialInline.getValue()) {
-                try (ReporterClosable ac = reporter.printInlining(new Timer(imageName, "(inline)"))) {
+                try (ReporterClosable ac = reporter.printInlining(registerTimer(new Timer(imageName, "(inline)")))) {
                     inlineTrivialMethods(debug);
                 }
             } else {
@@ -400,7 +402,7 @@ public class CompileQueue {
 
             assert suitesNotCreated();
             createSuites();
-            try (ReporterClosable ac = reporter.printCompiling(new Timer(imageName, "(compile)"))) {
+            try (ReporterClosable ac = reporter.printCompiling(registerTimer(new Timer(imageName, "(compile)")))) {
                 compileAll();
             }
         } catch (InterruptedException ie) {
@@ -1525,5 +1527,9 @@ public class CompileQueue {
 
     public Suites getRegularSuites() {
         return regularSuites;
+    }
+
+    private Timer registerTimer(Timer timer) {
+        return universe.getBigBang().getTimerManager().register(timer);
     }
 }
