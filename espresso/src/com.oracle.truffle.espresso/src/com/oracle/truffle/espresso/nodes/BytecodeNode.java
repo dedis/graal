@@ -329,6 +329,7 @@ import com.oracle.truffle.espresso.nodes.quick.invoke.InvokeSpecialQuickNode;
 import com.oracle.truffle.espresso.nodes.quick.invoke.InvokeStaticQuickNode;
 import com.oracle.truffle.espresso.nodes.quick.invoke.InvokeVirtualQuickNode;
 import com.oracle.truffle.espresso.perf.DebugCounter;
+import com.oracle.truffle.espresso.perf.InstrCounter;
 import com.oracle.truffle.espresso.runtime.EspressoContext;
 import com.oracle.truffle.espresso.runtime.EspressoException;
 import com.oracle.truffle.espresso.runtime.EspressoExitException;
@@ -356,6 +357,8 @@ public final class BytecodeNode extends EspressoMethodNode implements BytecodeOS
     private static final DebugCounter QUICKENED_BYTECODES = DebugCounter.create("Quickened bytecodes");
     private static final DebugCounter QUICKENED_INVOKES = DebugCounter.create("Quickened invokes (excluding INDY)");
     private static final DebugCounter[] BYTECODE_HISTOGRAM;
+
+    private static final InstrCounter EXEC_BC_COUNT = InstrCounter.create("Executed bytecodes");
 
     private static final byte TRIVIAL_UNINITIALIZED = -1;
     private static final byte TRIVIAL_NO = 0;
@@ -796,6 +799,7 @@ public final class BytecodeNode extends EspressoMethodNode implements BytecodeOS
         loop: while (true) {
             final int curOpcode = bs.opcode(curBCI);
             EXECUTED_BYTECODES_COUNT.inc();
+            EXEC_BC_COUNT.inc();
             try {
                 CompilerAsserts.partialEvaluationConstant(top);
                 CompilerAsserts.partialEvaluationConstant(curBCI);
@@ -1518,6 +1522,7 @@ public final class BytecodeNode extends EspressoMethodNode implements BytecodeOS
             }
             top += Bytecodes.stackEffectOf(curOpcode);
             curBCI = targetBCI;
+            System.out.println("EXEC_BC_COUNT:" + EXEC_BC_COUNT.get());
         }
     }
 
