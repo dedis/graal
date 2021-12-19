@@ -1514,14 +1514,12 @@ public final class BytecodeNode extends EspressoMethodNode implements BytecodeOS
                 if (CompilerDirectives.hasNextTier() && loopCount.value > 0) {
                     LoopNode.reportLoopCount(this, loopCount.value);
                 }
-                //System.out.println("[OSRReturn] EXEC_BC_COUNT:" + EXEC_BC_COUNT.get());
                 return e.getResult();
-            } catch (EspressoExitException e) {
-                CompilerDirectives.transferToInterpreter();
-                getRoot().abortMonitor(frame);
-                //System.out.println("[EspressoExit] EXEC_BC_COUNT:" + EXEC_BC_COUNT.get());
-                // Tearing down the VM, no need to report loop count.
-                throw e;
+//            } catch (EspressoExitException e) {
+//                CompilerDirectives.transferToInterpreter();
+//                getRoot().abortMonitor(frame);
+//                // Tearing down the VM, no need to report loop count.
+//                throw e;
             }
             assert curOpcode != WIDE && curOpcode != LOOKUPSWITCH && curOpcode != TABLESWITCH;
 
