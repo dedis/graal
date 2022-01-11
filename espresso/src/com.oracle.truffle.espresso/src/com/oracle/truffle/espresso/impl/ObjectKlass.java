@@ -96,6 +96,8 @@ public final class ObjectKlass extends Klass {
     public static final ObjectKlass[] EMPTY_ARRAY = new ObjectKlass[0];
     public static final KlassVersion[] EMPTY_KLASSVERSION_ARRAY = new KlassVersion[0];
 
+    private boolean countersEnabled;
+
     private final EnclosingMethodAttribute enclosingMethod;
 
     @CompilationFinal //
@@ -198,7 +200,16 @@ public final class ObjectKlass extends Klass {
             initSelfReferenceInPool();
         }
         this.initState = LOADED;
+        if (this.getNameAsString().equals("HelloWorld")) {
+                this.countersEnabled = true;
+        } else {
+                this.countersEnabled = false;
+        }
         assert verifyTables();
+    }
+
+    public boolean getCountersEnabled() {
+            return countersEnabled;
     }
 
     private void addSubType(ObjectKlass objectKlass) {

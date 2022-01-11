@@ -799,7 +799,9 @@ public final class BytecodeNode extends EspressoMethodNode implements BytecodeOS
         loop: while (true) {
             final int curOpcode = bs.opcode(curBCI);
             EXECUTED_BYTECODES_COUNT.inc();
-            EXEC_BC_COUNT.inc();
+            if (getDeclaringKlass().getCountersEnabled()) {
+                    EXEC_BC_COUNT.inc();
+            }
             try {
                 CompilerAsserts.partialEvaluationConstant(top);
                 CompilerAsserts.partialEvaluationConstant(curBCI);
@@ -1511,7 +1513,14 @@ public final class BytecodeNode extends EspressoMethodNode implements BytecodeOS
                 if (CompilerDirectives.hasNextTier() && loopCount.value > 0) {
                     LoopNode.reportLoopCount(this, loopCount.value);
                 }
+                //System.out.println("[OSRReturn] EXEC_BC_COUNT:" + EXEC_BC_COUNT.get());
                 return e.getResult();
+            } catch (EspressoExitException e) {
+                CompilerDirectives.transferToInterpreter();
+                getRoot().abortMonitor(frame);
+                //System.out.println("[EspressoExit] EXEC_BC_COUNT:" + EXEC_BC_COUNT.get());
+                // Tearing down the VM, no need to report loop count.
+                throw e;
             }
             assert curOpcode != WIDE && curOpcode != LOOKUPSWITCH && curOpcode != TABLESWITCH;
 
@@ -1522,7 +1531,6 @@ public final class BytecodeNode extends EspressoMethodNode implements BytecodeOS
             }
             top += Bytecodes.stackEffectOf(curOpcode);
             curBCI = targetBCI;
-            System.out.println("EXEC_BC_COUNT:" + EXEC_BC_COUNT.get());
         }
     }
 
