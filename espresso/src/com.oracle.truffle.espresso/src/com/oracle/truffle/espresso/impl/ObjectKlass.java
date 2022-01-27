@@ -200,7 +200,7 @@ public final class ObjectKlass extends Klass {
             initSelfReferenceInPool();
         }
         this.initState = LOADED;
-        if (this.getNameAsString().equals("HelloWorld")) {
+        if (this.getNameAsString().equals("Contract")) {
                 this.countersEnabled = true;
         } else {
                 this.countersEnabled = false;

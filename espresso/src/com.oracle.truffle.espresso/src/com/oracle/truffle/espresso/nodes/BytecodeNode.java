@@ -797,6 +797,7 @@ public final class BytecodeNode extends EspressoMethodNode implements BytecodeOS
         }
 
         loop: while (true) {
+            //System.out.println(getDeclaringKlass().getNameAsString() + " " + getMethod().getNameAsString());
             final int curOpcode = bs.opcode(curBCI);
             EXECUTED_BYTECODES_COUNT.inc();
             if (getDeclaringKlass().getCountersEnabled()) {
