@@ -96,7 +96,7 @@ public final class ObjectKlass extends Klass {
     public static final ObjectKlass[] EMPTY_ARRAY = new ObjectKlass[0];
     public static final KlassVersion[] EMPTY_KLASSVERSION_ARRAY = new KlassVersion[0];
 
-    private boolean countersEnabled;
+    private final boolean countersEnabled;
 
     private final EnclosingMethodAttribute enclosingMethod;
 
