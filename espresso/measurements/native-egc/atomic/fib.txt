@@ -1,0 +1,6 @@
+['/home/ceyhun/dedis-graal/graal/sdk/mxbuild/linux-amd64/GRAALVM_ESPRESSO_NATIVE_CE_JAVA11/graalvm-espresso-native-ce-java11-22.1.0-dev/bin/java', '-truffle', 'Sandbox', '-fib']
+Count: 1000000
+Min: 11770
+Average: 12749.401562
+95th: 15441.0
+Max: 84311

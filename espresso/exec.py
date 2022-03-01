@@ -5,7 +5,6 @@ import time
 import pandas as pd
 import csv
 
-os.environ['LD_DEBUG']="unused"
 os.environ['HOMEDIR']='/home/ceyhun/dedis-graal/graal/sdk/mxbuild/linux-amd64/GRAALVM_ESPRESSO_NATIVE_CE_JAVA11/graalvm-espresso-native-ce-java11-22.1.0-dev'
 
 header = ['time']
@@ -36,6 +35,7 @@ def exec_java(jfile, exp_type, wup):
 
     bin = os.environ['HOMEDIR'] + '/bin/java'
 
+    # cmd = ['mx', '--env' ,'jvm-ce', 'espresso', java_class]
     cmd = [bin, '-truffle', java_class]
     cmd.append(exp_type)
     cmd.append(wup)
