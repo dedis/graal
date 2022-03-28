@@ -5,51 +5,52 @@ import time
 import pandas as pd
 import csv
 
-os.environ['HOMEDIR']='/home/ceyhun/dedis-graal/graal/sdk/mxbuild/linux-amd64/GRAALVM_ESPRESSO_NATIVE_CE_JAVA11/graalvm-espresso-native-ce-java11-22.1.0-dev'
+# os.environ['HOMEDIR']='/home/ceyhun/dedis-graal/graal/sdk/mxbuild/linux-amd64/GRAALVM_ESPRESSO_NATIVE_CE_JAVA11/graalvm-espresso-native-ce-java11-22.1.0-dev'
+run_avgs = list()
 
-header = ['time']
+# def write_csv(measurements):
+    # data = list()
+    # for m in measurements:
+        # data.append([int(m)])
 
-def write_csv(measurements):
+    # with open("./data.csv", "w") as f:
+        # writer = csv.writer(f)
+        # writer.writerow(header)
+        # writer.writerows(data)
+    # f.close()
+
+def calc_run_avg(measurements):
     data = list()
     for m in measurements:
-        data.append([int(m)])
-
-    with open("./data.csv", "w") as f:
-        writer = csv.writer(f)
-        writer.writerow(header)
-        writer.writerows(data)
-    f.close()
+        data.append(int(m))
+    df = pd.DataFrame(data, columns=['time'])
+    run_avgs.append(df['time'].mean())
 
 def calculate_stats():
-    df = pd.read_csv("./data.csv")
+    df = pd.DataFrame(run_avgs, columns=['avgs'])
+    print("Min:", df['avgs'].min())
+    print("Average:", df['avgs'].mean())
+    print("95th:", df['avgs'].quantile(q=0.95))
+    print("Max:", df['avgs'].max())
 
-    print("Count:", df['time'].count())
-    print("Min:", df['time'].min())
-    print("Average:", df['time'].mean())
-    print("95th:", df['time'].quantile(q=0.95))
-    print("Max:", df['time'].max())
-
-def exec_java(jfile, exp_type, wup):
+def exec_java(jfile, wup, num_run):
     # java_class -> Sandbox
     java_class, ext = os.path.splitext(jfile)
 
-    bin = os.environ['HOMEDIR'] + '/bin/java'
-
-    # cmd = ['mx', '--env' ,'jvm-ce', 'espresso', java_class]
-    cmd = [bin, '-truffle', java_class]
-    cmd.append(exp_type)
+    cmd = [os.environ['ESPRESSO_JAVA'], '-truffle', java_class]
     cmd.append(wup)
-
     print(cmd)
 
-    proc = subprocess.Popen(cmd, env=dict(os.environ), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    stdout, stderr = proc.communicate()
+    for i in range(num_run):
+        proc = subprocess.Popen(cmd, env=dict(os.environ), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        stdout, stderr = proc.communicate()
 
-    dec_out = stdout.decode()
-    measurements = dec_out.split("\n")
-    measurements.remove("")
+        dec_out = stdout.decode()
+        measurements = dec_out.split("\n")
+        measurements.remove("")
+        print(measurements)
+        # calc_run_avg(measurements)
 
-    write_csv(measurements)
-    calculate_stats()
+    # calculate_stats()
 
-exec_java(sys.argv[1], sys.argv[2], sys.argv[3])
+exec_java(sys.argv[1], sys.argv[2], int(sys.argv[3]))

@@ -1,7 +1,5 @@
 package com.oracle.truffle.espresso.perf;
 
-//import java.util.concurrent.atomic.AtomicLong;
-
 public abstract class InstrCounter {
         private InstrCounter() {
         }
@@ -16,7 +14,6 @@ public abstract class InstrCounter {
 
         private static final class InstrCounterImpl extends InstrCounter {
                 private final String name;
-                //private final AtomicLong value;
                 private long value;
 
                 private InstrCounterImpl(String name) {
@@ -31,13 +28,11 @@ public abstract class InstrCounter {
 
                 @Override
                 public long get() {
-                    //return value.get();
                     return value;
                 }
 
                 @Override
                 public void inc() {
-                    //value.incrementAndGet();
                     value++;
                 }
         }
