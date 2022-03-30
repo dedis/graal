@@ -9,11 +9,13 @@ import csv
 run_avgs = list()
 
 def calc_run_avg(measurements):
-    data = list()
+    # data = list()
+    # for m in measurements:
+        # data.append(int(m))
+    # df = pd.DataFrame(data, columns=['time'])
+    # run_avgs.append(df['time'].mean())
     for m in measurements:
-        data.append(int(m))
-    df = pd.DataFrame(data, columns=['time'])
-    run_avgs.append(df['time'].mean())
+        run_avgs.append(float(m))
 
 def calculate_stats():
     df = pd.DataFrame(run_avgs, columns=['avgs'])
