@@ -30,7 +30,10 @@ public class Sandbox{
                         end = System.nanoTime();
                         execTimes[i] = end-start;
                 }
+                long sum = 0;
                 for (Long t : execTimes)
-                        System.out.println(t);
+                        sum += t;
+                double avg = sum / execTimes.length;
+                System.out.println(avg);
         }
 }

@@ -358,7 +358,8 @@ public final class BytecodeNode extends EspressoMethodNode implements BytecodeOS
     private static final DebugCounter QUICKENED_INVOKES = DebugCounter.create("Quickened invokes (excluding INDY)");
     private static final DebugCounter[] BYTECODE_HISTOGRAM;
 
-    private static final InstrCounter EXEC_BC_COUNT = InstrCounter.create("Executed bytecodes");
+//    private static final InstrCounter EXEC_BC_COUNT = InstrCounter.create("Executed bytecodes");
+    private static long EXEC_BC_COUNT = 0L;
     private static final long THRESHOLD_COUNT = 9000000000L;
 
     private static final byte TRIVIAL_UNINITIALIZED = -1;
@@ -798,12 +799,14 @@ public final class BytecodeNode extends EspressoMethodNode implements BytecodeOS
         }
 
         loop: while (true) {
-            //System.out.println(getDeclaringKlass().getNameAsString() + " " + getMethod().getNameAsString());
-            if (EXEC_BC_COUNT.get() < THRESHOLD_COUNT) {
+//            System.out.println(getDeclaringKlass().getNameAsString() + " " + getMethod().getNameAsString());
+//            if (EXEC_BC_COUNT.get() < THRESHOLD_COUNT) {
+            if (EXEC_BC_COUNT < THRESHOLD_COUNT) {
                 final int curOpcode = bs.opcode(curBCI);
                 EXECUTED_BYTECODES_COUNT.inc();
                 if (getDeclaringKlass().getCountersEnabled()) {
-                    EXEC_BC_COUNT.inc();
+                    EXEC_BC_COUNT++;
+//                    EXEC_BC_COUNT.inc();
                 }
                 try {
                     CompilerAsserts.partialEvaluationConstant(top);
