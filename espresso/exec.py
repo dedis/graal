@@ -8,17 +8,6 @@ import csv
 # os.environ['HOMEDIR']='/home/ceyhun/dedis-graal/graal/sdk/mxbuild/linux-amd64/GRAALVM_ESPRESSO_NATIVE_CE_JAVA11/graalvm-espresso-native-ce-java11-22.1.0-dev'
 run_avgs = list()
 
-# def write_csv(measurements):
-    # data = list()
-    # for m in measurements:
-        # data.append([int(m)])
-
-    # with open("./data.csv", "w") as f:
-        # writer = csv.writer(f)
-        # writer.writerow(header)
-        # writer.writerows(data)
-    # f.close()
-
 def calc_run_avg(measurements):
     data = list()
     for m in measurements:
@@ -37,9 +26,9 @@ def exec_java(jfile, wup, num_run):
     # java_class -> Sandbox
     java_class, ext = os.path.splitext(jfile)
 
-    cmd = [os.environ['ESPRESSO_JAVA'], '-truffle', java_class]
+    cmd = [os.environ['ESPRESSO_JAVA'], '-truffle', '--log.level=OFF', java_class]
     cmd.append(wup)
-    print(cmd)
+    # print(cmd)
 
     for i in range(num_run):
         proc = subprocess.Popen(cmd, env=dict(os.environ), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -48,9 +37,8 @@ def exec_java(jfile, wup, num_run):
         dec_out = stdout.decode()
         measurements = dec_out.split("\n")
         measurements.remove("")
-        print(measurements)
-        # calc_run_avg(measurements)
+        calc_run_avg(measurements)
 
-    # calculate_stats()
+    calculate_stats()
 
 exec_java(sys.argv[1], sys.argv[2], int(sys.argv[3]))
